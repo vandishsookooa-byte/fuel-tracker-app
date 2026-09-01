@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fuel Tracker - Refuel & Mileage Calculator</title>
+  
+  <!-- PWA Metadata -->
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#8B503A">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Fuel Tracker">
+  <meta name="description" content="Track refueling amounts, fuel prices, and target mileage to reach based on current odometer readings and vehicle efficiency.">
+  
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+
+  <!-- Top Notification Toast -->
+  <div id="toast-banner" class="toast-banner hidden">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span id="toast-message">Refueling log saved successfully!</span>
+  </div>
+
+  <div class="container">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div>
+        <div id="header-date" class="header-subtitle">TUESDAY, SEP 01</div>
+        <h1 class="header-title">Fuel <strong>Tracker</strong></h1>
+      </div>
+      <div class="header-avatar" title="Fuel Tracker">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"></path>
+          <path d="M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V8l-3-3"></path>
+          <path d="M7 6h4"></path>
+          <path d="M7 10h4"></path>
+        </svg>
+      </div>
+    </header>
+
+    <!-- Odometer Banner Card -->
+    <section class="odometer-banner">
+      <div class="odometer-label">Current Odometer (Baseline)</div>
+      <div class="odometer-number-row">
+        <span id="current-odometer-display" class="odometer-value">325,662</span>
+        <span class="odometer-unit">km</span>
+      </div>
+      <div class="engine-status-tag">
+        <span class="status-dot"></span>
+        <span>Healthy Engine Status Tracker Active</span>
+      </div>
+    </section>
+
+    <!-- Stats Grid Row -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span>Total Spent</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div id="stat-total-spent" class="stat-card-value">Rs 0</div>
+        <div class="stat-card-sub">All-time logged fuel</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span>Vehicle Average</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+          </svg>
+        </div>
+        <div id="stat-avg-efficiency" class="stat-card-value">---</div>
+        <div id="stat-avg-sub" class="stat-card-sub">Need 2+ records</div>
+      </div>
+    </section>
+
+    <!-- Main Refueling Calculator Card -->
+    <section class="form-card">
+      <div class="form-header">
+        <div class="form-title">Refueling Parameters</div>
+        <div id="price-rate-badge" class="rate-badge">Rs 64.25 / L</div>
+      </div>
+
+      <!-- Date Input -->
+      <div class="input-group">
+        <label class="input-label" for="input-date">Refueling Date</label>
+        <input type="date" id="input-date">
+      </div>
+
+      <!-- Amount Spent (Rs) -->
+      <div class="input-group">
+        <label class="input-label" for="input-amount">Refueling Amount (Rs)</label>
+        <div class="input-control-wrapper has-prefix">
+          <span class="input-prefix">Rs</span>
+          <input type="number" id="input-amount" step="10" placeholder="e.g. 1000">
+        </div>
+        <!-- Quick Amount Presets -->
+        <div class="chips-row">
+          <button type="button" class="chip-btn preset-amount" data-val="500">Rs 500</button>
+          <button type="button" class="chip-btn preset-amount active" data-val="1000">Rs 1000</button>
+          <button type="button" class="chip-btn preset-amount" data-val="1500">Rs 1500</button>
+          <button type="button" class="chip-btn preset-amount" data-val="2000">Rs 2000</button>
+        </div>
+      </div>
+
+      <!-- Fuel Price (Rs/L) -->
+      <div class="input-group">
+        <label class="input-label" for="input-price">Fuel Price (Rs/L)</label>
+        <div class="input-control-wrapper has-suffix">
+          <input type="number" id="input-price" step="0.01" placeholder="e.g. 64.25">
+          <span class="input-suffix">Rs/L</span>
+        </div>
+      </div>
+
+      <!-- Current Odometer (km) -->
+      <div class="input-group">
+        <label class="input-label" for="input-odometer">Current Odometer Reading</label>
+        <div class="input-control-wrapper has-suffix">
+          <input type="number" id="input-odometer" step="1" placeholder="e.g. 325662">
+          <span class="input-suffix">km</span>
+        </div>
+      </div>
+
+      <!-- Vehicle Fuel Efficiency Slider -->
+      <div class="input-group">
+        <div class="slider-header">
+          <span>Assumed vehicle mileage</span>
+          <span id="display-efficiency" class="slider-value-display">15.0 km/L</span>
+        </div>
+        <input type="range" id="slider-efficiency" min="5" max="45" step="0.5" value="15.0">
+        <div class="input-control-wrapper has-suffix" style="margin-top: 4px;">
+          <input type="number" id="input-efficiency" step="0.1" min="5" max="45" value="15.0">
+          <span class="input-suffix">km/L</span>
+        </div>
+        <!-- Quick Mileage Presets -->
+        <div class="chips-row">
+          <button type="button" class="chip-btn preset-eff" data-val="12.0">12.0 km/L</button>
+          <button type="button" class="chip-btn preset-eff" data-val="15.0">15.0 km/L</button>
+          <button type="button" class="chip-btn preset-eff" data-val="18.0">18.0 km/L</button>
+          <button type="button" class="chip-btn preset-eff" data-val="22.0">22.0 km/L</button>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="input-group">
+        <label class="input-label" for="input-notes">Notes / Fuel Station (Optional)</label>
+        <input type="text" id="input-notes" placeholder="e.g. Shell City Centre">
+      </div>
+
+      <!-- Live Calculations Section -->
+      <div id="forecast-card" class="forecast-card">
+        <div class="forecast-split">
+          <div>
+            <div class="forecast-col-title">FUEL VOLUME</div>
+            <div id="forecast-litres" class="forecast-col-val">15.56 L</div>
+          </div>
+          <div class="forecast-divider"></div>
+          <div style="text-align: right;">
+            <div class="forecast-col-title">ADDED RANGE</div>
+            <div id="forecast-range" class="forecast-col-val" style="color: var(--color-tertiary);">+233.5 km</div>
+          </div>
+        </div>
+
+        <div class="target-highlight-box">
+          <div class="target-highlight-title">TARGET MILEAGE TO REACH</div>
+          <div id="forecast-target-odo" class="target-highlight-val">325,895.5 km</div>
+          <div id="forecast-target-desc" class="target-highlight-desc">You will reach this target with your current Rs 1000 refuel.</div>
+        </div>
+      </div>
+
+      <!-- Submit Log Button -->
+      <button type="button" id="btn-save" class="btn-primary">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Confirm Refuel Log</span>
+      </button>
+    </section>
+
+    <!-- History Logs Section -->
+    <section>
+      <div class="history-header-row">
+        <div class="history-title">Refueling Records History</div>
+        <div id="history-badge-count" class="badge-count">0 logs</div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-history" class="empty-state-card" style="margin-top: 12px;">
+        <div class="empty-state-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18"></path>
+            <path d="M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V8l-3-3"></path>
+          </svg>
+        </div>
+        <div class="empty-state-title">Your log is empty</div>
+        <div class="empty-state-desc">Enter fuel bills to calculate fuel volume, range, and track mileage metrics over time.</div>
+      </div>
+
+      <!-- Log Items List -->
+      <div id="history-list" class="history-list" style="margin-top: 12px;"></div>
+    </section>
+
+    <!-- Utility / Data Management & PWA Install Bar -->
+    <section class="utility-bar">
+      <button type="button" id="btn-export" class="btn-secondary" title="Export Backup JSON">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Export Data</span>
+      </button>
+
+      <label class="btn-secondary" style="cursor: pointer;" title="Import Backup JSON">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <span>Import Data</span>
+        <input type="file" id="file-import" accept=".json" style="display: none;">
+      </label>
+
+      <button type="button" id="btn-install-pwa" class="btn-secondary" style="display: none; background: var(--color-primary-container);" title="Install as App">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+          <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+        <span>Install App</span>
+      </button>
+    </section>
+
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Fuel Tracker</string>
+    <string name="screen_title">Fuel Tracker</string>
+    <string name="info_banner_title">Current Fuel Mileage Tracker</string>
+    <string name="info_banner_desc">Set your refueling amount in Price below. Your actual mileage began at %s.</string>
+    <string name="stat_total_spent">Total Fuel Cost</string>
+    <string name="stat_real_efficiency">Computed Mileage</string>
+    <string name="calc_section_title">Refuel &amp; Live prediction Calculator</string>
+    <string name="field_refuel_date">Refueling Date</string>
+    <string name="field_amount_spent">Refuel Refueling Amount (Rs)</string>
+    <string name="field_fuel_price">Fuel Price (Rs/Litre)</string>
+    <string name="field_current_odometer">Current Odometer (Mileage)</string>
+    <string name="field_fuel_efficiency">Vehicle Average Efficiency (km/L)</string>
+    <string name="field_notes">Optional Notes (e.g. Shell, Premium)</string>
+    <string name="forecast_title">Live Forecast &amp; Target prediction</string>
+    <string name="forecast_litres_gained">Purchased Fuel Volume</string>
+    <string name="forecast_range">Estimated Added Range</string>
+    <string name="forecast_target_mileage">Target Mileage to Reach</string>
+    <string name="forecast_explanation">You will need to refuel again when your odometer reaches %s km.</string>
+    <string name="btn_save_record">Log Refuel &amp; Save Entry</string>
+    <string name="history_section_title">Refueling Run History</string>
+    <string name="empty_history_title">No refueling entries found</string>
+    <string name="empty_history_desc">Enter refueling bills, watch calculations, and save to track actual fuel mileage drift over time.</string>
+</resources>

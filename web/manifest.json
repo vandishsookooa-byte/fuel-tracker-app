@@ -1,0 +1,19 @@
+{
+  "name": "Fuel Tracker - Refuel & Mileage Calculator",
+  "short_name": "Fuel Tracker",
+  "description": "Track refueling amounts, fuel prices, and target mileage to reach based on current odometer readings and vehicle efficiency.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FDF8F5",
+  "theme_color": "#8B503A",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%238B503A'/><path d='M35 28 h24 a6 6 0 0 1 6 6 v38 h-30 v-38 a6 6 0 0 1 6 -6 Z M40 38 h14 v16 h-14 Z M65 42 l8 8 v14 h-4' fill='none' stroke='%23FFFFFF' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/><circle cx='47' cy='62' r='3' fill='%23FFFFFF'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "productivity", "transportation"]
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Fuel Tracker",
+  "description": "Track refueling amounts, fuel prices, and target mileage to reach based on current odometer readings and vehicle efficiency.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
